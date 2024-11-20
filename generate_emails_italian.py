@@ -58,7 +58,7 @@ def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=Non
             # Determine photo URL
             candidate_id = row["ID utente"]
             if candidate_id in special_logos:
-                photo_url = special_logos[candidate_id]
+                photo_url = special_logos[candidate_id]["url"]
             elif row["Titolo"] == "Signor":
                 photo_url = "https://www.experteer.de/images/default_photos/male.png"
             elif row["Titolo"] == "Signora":
@@ -655,8 +655,13 @@ def generate_html(title, logo_url,expertise_dict, number_candidates, candidates,
                                                                                     </table>
                                                                                 </td>
                                                                             </tr>
-                                                                            <tr>
-                                                                                {expertise_list}
+                                                                            <tr><td align="left"
+                                                                                    style="font-size:0px;padding-top:5px;padding-left:2px;word-break:break-word;">
+                                                                                    <table cellpadding="0" cellspacing="0" width="100%" border="0"
+                                                                                      style="color:#525B65;font-family:Lato;font-size:14px;line-height:24px;table-layout:auto;width:100%;border:none;">
+                                                                                        <tr style="display: flex;align-items: center;justify-content: flex-start;column-gap: 4px;">
+                                                                                          {expertise_list}
+                                                                                      </tr>
                                                                                     </table>
                                                                                 </td>
                                                                             </tr>
@@ -713,11 +718,10 @@ def generate_html(title, logo_url,expertise_dict, number_candidates, candidates,
   # Generate expertise table rows
     def generate_expertise_rows(expertise_list):
         return "".join(f"""
-        <tr style="display: flex;align-items: center;justify-content: flex-start;column-gap: 4px;">
             <td style="border: solid 1px #525B65; border-radius: 50px;padding: 2px 6px 2px 6px;">
                 {expertise}
             </td>
-        </tr>""" for expertise in expertise_list)
+        """ for expertise in expertise_list)
 
     # Create the candidates' section content
     candidates_section = ""
@@ -727,7 +731,7 @@ def generate_html(title, logo_url,expertise_dict, number_candidates, candidates,
 
         # Retrieve expertise for the candidate
         if candidate_id in expertise_dict:
-            expertise_list_html = generate_expertise_rows(expertise_dict[candidate_id])
+            expertise_list_html = generate_expertise_rows(expertise_dict[candidate_id]["expertises"])
         else:
             expertise_list_html = generate_expertise_rows(["No expertise listed"])
 
@@ -808,12 +812,14 @@ def process_csv_folder(folder_path, filter_eignung, special_logos, project_logos
 if __name__ == "__main__":
     input_folder = "italian_projects"  # Replace with the folder containing CSV files
     filter_eignung = "Molto Buono"  # Change to None if you want all candidates
-    candidates_photos = {
-        "9321920": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH1zAyMLYxPDeENTMyNzY0szQwM2a7YQK86SzNzUTAYAqecjvg%7C%7C09687101358c4398938549f20e2025174dd09fc5.career/profile_photo/7028341_1562739610",
-        
+    candidates_info = {
+        "9321920": {
+          "url":"https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH1zAyMLYxPDeENTMyNzY0szQwM2a7YQK86SzNzUTAYAqecjvg%7C%7C09687101358c4398938549f20e2025174dd09fc5.career/profile_photo/7028341_1562739610",
+          "expertises": ["CAD", "Personal"]
+        }
     }
     project_logos ={
         "Scada Engineer" : "//blobs.experteer.com/blob/v1/eJwtjLEOgjAURRkMERN_gpkoJSFAG0YHduLaPLHWF6Ft2kpAf96SONzlnJO7238TevAWHrpLr1Y4_IgJFk6KfAnLxOKF8nzD7Z8xaWFGv7ZDMMKyGwwvafVb3dvwo5wBGwTLjJI8pvGlp0fcwhlGjGhiwD-79GS0Q49a8UFPBtTKRy21O5O8Kqu65qQq6rIkTZPHLO5p4nESGP0AMFA5Zg%7C%7C4857cb02d009e02c75cdb39e59b40dab6cb0dae9.recruiting/position_company_logos/1075788_1728551990",
     "Immobilienvermarktung":"//blobs.experteer.com/blob/v1/eJwtjLEOgjAURR1MIyb-BDNRStRqG0YHduLaPLHWF6FtSiWgP29JHO5yzsldrr4JXwcPD1ulV696_KgORkmLfIzL1BiUCXLG5Z8J7WHAMJVNNMqLGzQv7e3b3Mv4Y3oHPgqROaMl4eRS8w3O4QAtLnjiIDyrdOtsjwGtkY3tHJhJtlbbfkdzdmAsl5QV7HjaU3YmgtQ8CdgpXPwAL7o5Yg%7C%7C1f8da57190aa5e7ac1eaeb94a37ea40cad7f7e99.recruiting/position_company_logos/1075770_1727684179"
     }
-    process_csv_folder(input_folder, filter_eignung=filter_eignung,special_logos=candidates_photos, project_logos=project_logos)
+    process_csv_folder(input_folder, filter_eignung=filter_eignung,special_logos=candidates_info, project_logos=project_logos)

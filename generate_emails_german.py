@@ -56,7 +56,7 @@ def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=Non
             # Determine photo URL based on "Anrede"
             candidate_id = row["Mitglieds ID"]
             if candidate_id in special_logos:
-                photo_url = special_logos[candidate_id]
+                photo_url = special_logos[candidate_id]["url"]
             if row["Anrede"] == "Herr":
                 photo_url = "https://www.experteer.de/images/default_photos/male.png"
             elif row["Anrede"] == "Frau":
@@ -651,15 +651,13 @@ def generate_html(title, logo_url, number_candidates, candidates, output_file):
                                                                                     </table>
                                                                                 </td>
                                                                             </tr>
-                                                                            <tr>
-                                                                                <td align="left"
+                                                                            <tr><td align="left"
                                                                                     style="font-size:0px;padding-top:5px;padding-left:2px;word-break:break-word;">
                                                                                     <table cellpadding="0" cellspacing="0" width="100%" border="0"
-                                                                                        style="color:#525B65;font-family:Lato;font-size:14px;line-height:24px;table-layout:auto;width:100%;border:none;">
+                                                                                      style="color:#525B65;font-family:Lato;font-size:14px;line-height:24px;table-layout:auto;width:100%;border:none;">
                                                                                         <tr style="display: flex;align-items: center;justify-content: flex-start;column-gap: 4px;">
-                                                                                            <td style="border: solid 1px #525B65; border-radius: 50px;padding: 2px 6px 2px 6px;">
-                                                                                                Personalführung</td>
-                                                                                        </tr>
+                                                                                          {expertise_list}
+                                                                                      </tr>
                                                                                     </table>
                                                                                 </td>
                                                                             </tr>
@@ -713,18 +711,37 @@ def generate_html(title, logo_url, number_candidates, candidates, output_file):
 
 </html>"""
 
+    # Generate expertise table rows
+    def generate_expertise_rows(expertise_list):
+        return "".join(f"""
+            <td style="border: solid 1px #525B65; border-radius: 50px;padding: 2px 6px 2px 6px;">
+                {expertise}
+            </td>
+        """ for expertise in expertise_list)
+
     # Create the candidates' section content
     candidates_section = ""
     for candidate in candidates:
+        candidate_id = candidate["id"]
+        expertise_list_html = ""
+
+        # Retrieve expertise for the candidate
+        if candidate_id in expertise_dict:
+            expertise_list_html = generate_expertise_rows(expertise_dict[candidate_id]["expertises"])
+        else:
+            expertise_list_html = generate_expertise_rows(["No expertise listed"])
+
         candidates_section += candidate_template.format(
-            photo_url=candidate["photo_url"],
             candidate_name=candidate["name"],
             job_title=candidate["job_title"],
             company=candidate["company"],
             email=candidate["email"],
             phone=candidate["phone"],
-            profile_url=candidate["profile_url"]
+            photo_url=candidate["photo_url"],
+            profile_url=candidate["profile_url"],
+            expertise_list=expertise_list_html,
         )
+
 
     # Combine the template with the filled candidate sections
 
@@ -740,7 +757,7 @@ def generate_html(title, logo_url, number_candidates, candidates, output_file):
         file.write(html_final)
     print(f"HTML file '{output_file}' has been generated successfully.")
 
-def process_csv_folder(folder_path, filter_eignung=None, special_logos=None, project_logos=None):
+def process_csv_folder(folder_path, filter_eignung, special_logos, project_logos):
     """
     Process all CSV files in a folder, extract candidate data, and generate an HTML file for each.
 
@@ -779,6 +796,7 @@ def process_csv_folder(folder_path, filter_eignung=None, special_logos=None, pro
             generate_html(
                 title=title,
                 logo_url=company_logo_url,
+                expertise_dict=special_logos,
                 number_candidates=len(candidates),
                 candidates=candidates,
                 output_file=output_file_path
@@ -787,12 +805,15 @@ def process_csv_folder(folder_path, filter_eignung=None, special_logos=None, pro
 
 
 if __name__ == "__main__":
-    candidates_photos = {
-        "id": "url"
+    candidates_info = {
+        "8586574": {
+          "url":"https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH1zAyMLYxPDeENTMyNzY0szQwM2a7YQK86SzNzUTAYAqecjvg%7C%7C09687101358c4398938549f20e2025174dd09fc5.career/profile_photo/7028341_1562739610",
+          "expertises": ["CAD", "Personal"]
+        }
     }
     project_logos = {
         "title": "url"
     }
     input_folder = "german_projects"  # Replace with the folder containing CSV files
     filter_eignung = "Gut"  # Change to None if you want all candidates
-    process_csv_folder(input_folder, filter_eignung=filter_eignung, special_logos=candidates_photos, project_logos=project_logos)
+    process_csv_folder(input_folder, filter_eignung=filter_eignung, special_logos=candidates_info, project_logos=project_logos)
