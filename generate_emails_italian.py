@@ -20,50 +20,56 @@ def extract_projektname_from_csv(csv_file):
     """
     # Detect the file encoding
     encoding = detect_file_encoding(csv_file)
-
+    projektname = ""
     with open(csv_file, 'r', encoding=encoding) as file:
         csv_reader = csv.DictReader(file, delimiter="\t")  # Adjust delimiter if needed
 
         for row in csv_reader:
             projektname = row["Nome del progetto"].strip()
             if projektname:  # Return the first non-empty project name
+                
                 return projektname
+    
+    
 
     return None  # Return None if no project name is found
 
-def extract_candidates_from_csv(csv_file, filter_eignung=None):
+def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=None):
     """
     Extract candidate data from a CSV file and return a list of dictionaries.
 
     :param csv_file: Path to the CSV file
     :param filter_eignung: Filter for "Valutazione del progetto". If None, all candidates are included.
-                           Example: "Molto buono" to include only candidates with "Valutazione del progetto" == "Molto buono".
-    :return: List of dictionaries containing candidate data
+    :param special_logos: A dictionary mapping candidate IDs to special logo URLs.
+    :return: List of dictionaries containing candidate data.
     """
-    # Detect file encoding
+    special_logos = special_logos or {}
     encoding = detect_file_encoding(csv_file)
 
     candidates = []
     with open(csv_file, 'r', encoding=encoding) as file:
-        csv_reader = csv.DictReader(file, delimiter="\t")  # Adjust delimiter if needed
+        csv_reader = csv.DictReader(file, delimiter="\t")
 
         for row in csv_reader:
             # Apply filter on "Valutazione del progetto" if specified
             if filter_eignung and row["Valutazione del progetto"] not in ["Buono", "Molto buono"]:
                 continue
 
-            # Determine photo URL based on "Titolo"
-            if row["Titolo"] == "Signor":
+            # Determine photo URL
+            candidate_id = row["ID utente"]
+            if candidate_id in special_logos:
+                photo_url = special_logos[candidate_id]
+            elif row["Titolo"] == "Signor":
                 photo_url = "https://www.experteer.de/images/default_photos/male.png"
             elif row["Titolo"] == "Signora":
                 photo_url = "https://www.experteer.de/images/default_photos/female.png"
             else:
-                photo_url = "https://www.experteer.de/images/default_photos/default.png"
+                photo_url = "https://www.experteer.de/images/default_photos/female.png"
 
-            # Extract relevant fields
+            # Extract candidate details
             candidate = {
                 "name": f"{row['Nome']} {row['Cognome']}".strip(),
-                "id": row["ID utente"],
+                "id": candidate_id,
                 "job_title": f"{row['Posizione attuale']}\n        presso {row['Azienda']}".strip(),
                 "company": row["Azienda"],
                 "email": row["Indirizzo email"],
@@ -73,10 +79,13 @@ def extract_candidates_from_csv(csv_file, filter_eignung=None):
             }
             candidates.append(candidate)
 
+            # Print candidate details
+           # print(f"Candidate Name: {candidate['name']}")
+           # print(f"Candidate URL: https://intern.experteer.com/admin/account_photo_json?id={candidate['id']}")
+
     return candidates
 
-
-def generate_html(title, logo_url, number_candidates, candidates, output_file):
+def generate_html(title, logo_url,expertise_dict, number_candidates, candidates, output_file):
     """
     Generate an HTML file for the provided candidate data.
 
@@ -469,7 +478,7 @@ def generate_html(title, logo_url, number_candidates, candidates, output_file):
                                       <tr>
                                         <td style="width:72px;">
                                           <img height="auto"
-                                            src="{logo_url}"
+                                            src="https:{logo_url}"
                                             style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:14px;"
                                             width="72" />
                                         </td>
@@ -647,14 +656,7 @@ def generate_html(title, logo_url, number_candidates, candidates, output_file):
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
-                                                                                <td align="left"
-                                                                                    style="font-size:0px;padding-top:5px;padding-left:2px;word-break:break-word;">
-                                                                                    <table cellpadding="0" cellspacing="0" width="100%" border="0"
-                                                                                        style="color:#525B65;font-family:Lato;font-size:14px;line-height:24px;table-layout:auto;width:100%;border:none;">
-                                                                                        <tr style="display: flex;align-items: center;justify-content: flex-start;column-gap: 4px;">
-                                                                                            <td style="border: solid 1px #525B65; border-radius: 50px;padding: 2px 6px 2px 6px;">
-                                                                                                Personalführung</td>
-                                                                                        </tr>
+                                                                                {expertise_list}
                                                                                     </table>
                                                                                 </td>
                                                                             </tr>
@@ -708,17 +710,36 @@ def generate_html(title, logo_url, number_candidates, candidates, output_file):
 
 </html>"""
 
+  # Generate expertise table rows
+    def generate_expertise_rows(expertise_list):
+        return "".join(f"""
+        <tr style="display: flex;align-items: center;justify-content: flex-start;column-gap: 4px;">
+            <td style="border: solid 1px #525B65; border-radius: 50px;padding: 2px 6px 2px 6px;">
+                {expertise}
+            </td>
+        </tr>""" for expertise in expertise_list)
+
     # Create the candidates' section content
     candidates_section = ""
     for candidate in candidates:
+        candidate_id = candidate["id"]
+        expertise_list_html = ""
+
+        # Retrieve expertise for the candidate
+        if candidate_id in expertise_dict:
+            expertise_list_html = generate_expertise_rows(expertise_dict[candidate_id])
+        else:
+            expertise_list_html = generate_expertise_rows(["No expertise listed"])
+
         candidates_section += candidate_template.format(
-            photo_url=candidate["photo_url"],
             candidate_name=candidate["name"],
             job_title=candidate["job_title"],
             company=candidate["company"],
             email=candidate["email"],
             phone=candidate["phone"],
-            profile_url=candidate["profile_url"]
+            photo_url=candidate["photo_url"],
+            profile_url=candidate["profile_url"],
+            expertise_list=expertise_list_html,
         )
 
     # Combine the template with the filled candidate sections
@@ -735,40 +756,64 @@ def generate_html(title, logo_url, number_candidates, candidates, output_file):
         file.write(html_final)
     print(f"HTML file '{output_file}' has been generated successfully.")
 
-def process_csv_folder(folder_path, filter_eignung=None):
-    
+
+def process_csv_folder(folder_path, filter_eignung, special_logos, project_logos):
+    """
+    Process all CSV files in a folder, extract candidate data, and generate an HTML file for each.
+
+    :param folder_path: Path to the folder containing CSV files.
+    :param filter_eignung: Filter for "Valutazione del progetto". If None, all candidates are included.
+    :param special_logos: A dictionary mapping candidate IDs to special logo URLs.
+    :param project_logos: A dictionary mapping project names to their company logo URLs.
+    """
+    special_logos = special_logos or {}
+    project_logos = project_logos or {}
+
     for file_name in os.listdir(folder_path):
         if file_name.endswith(".csv"):
             csv_file = os.path.join(folder_path, file_name)
             title = extract_projektname_from_csv(csv_file)
+
             if not title:
                 print(f"Skipping file {csv_file}: No project name found.")
                 continue
 
-            candidates = extract_candidates_from_csv(csv_file, filter_eignung=filter_eignung)
-            
-            # Generate the HTML file and save it in the same folder as the input CSV
-            output_file_path = os.path.join(
-                folder_path,
-                f"{title.replace(' ', '_').replace(':', '_').replace('-', '_')}.html"
+            candidates = extract_candidates_from_csv(
+                csv_file, filter_eignung=filter_eignung, special_logos=special_logos
             )
-            
+
+            # Check if the title exists in project_logos
+            if title in project_logos.keys():
+                company_logo_url = project_logos[title]
+            else:
+                print(f"Warning: No logo found for project '{title}'.")
+                company_logo_url = "https://default-logo-url.com/default-logo.png"  # Replace with your actual default URL
+
+            output_file_path = os.path.join(
+                folder_path, f"{title.replace(' ', '_').replace(':', '_').replace('-', '_')}.html"
+            )
+
             generate_html(
                 title=title,
-                logo_url="https://blobs.experteer.com/blob/v1/eJwtjLEOgjAURR1MIyb-"
-                         "BDNRCpGSNowO7MS1qVjri9A2bSWgP29JHO5yzsnd7r4J3QcnHqZNr056-"
-                         "MhRzBwX-RyXyTlIHfiKmz9jyokJwtL00UjHbqJ_KWfe-t7EH-2tcFGwzGrFEUWXjh5gDScxwIYm"
-                         "VoRnmx6t8RDAaN6b0Qq98MEo4084J-e6IhyTEpdFXZIKMdTRJMAoYfMDL6A5Xg%7C%7Cfa4e3f89e"
-                         "2bb845b2fa9af5442ea53fa28c69327.recruiting/position_company_logos/1075867_1731328376",
+                logo_url=company_logo_url,
+                expertise_dict=special_logos,
                 number_candidates=len(candidates),
                 candidates=candidates,
                 output_file=output_file_path
             )
+            print(f"HTML file generated for project '{title}' at {output_file_path}")
 
-            print(f"HTML file generated: {output_file_path}")
 
 
 if __name__ == "__main__":
     input_folder = "italian_projects"  # Replace with the folder containing CSV files
-    filter_eignung = "Molto buono"  # Change to None if you want all candidates
-    process_csv_folder(input_folder, filter_eignung=filter_eignung)
+    filter_eignung = "Molto Buono"  # Change to None if you want all candidates
+    candidates_photos = {
+        "9321920": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH1zAyMLYxPDeENTMyNzY0szQwM2a7YQK86SzNzUTAYAqecjvg%7C%7C09687101358c4398938549f20e2025174dd09fc5.career/profile_photo/7028341_1562739610",
+        
+    }
+    project_logos ={
+        "Scada Engineer" : "//blobs.experteer.com/blob/v1/eJwtjLEOgjAURRkMERN_gpkoJSFAG0YHduLaPLHWF6Ft2kpAf96SONzlnJO7238TevAWHrpLr1Y4_IgJFk6KfAnLxOKF8nzD7Z8xaWFGv7ZDMMKyGwwvafVb3dvwo5wBGwTLjJI8pvGlp0fcwhlGjGhiwD-79GS0Q49a8UFPBtTKRy21O5O8Kqu65qQq6rIkTZPHLO5p4nESGP0AMFA5Zg%7C%7C4857cb02d009e02c75cdb39e59b40dab6cb0dae9.recruiting/position_company_logos/1075788_1728551990",
+    "Immobilienvermarktung":"//blobs.experteer.com/blob/v1/eJwtjLEOgjAURR1MIyb-BDNRStRqG0YHduLaPLHWF6FtSiWgP29JHO5yzsldrr4JXwcPD1ulV696_KgORkmLfIzL1BiUCXLG5Z8J7WHAMJVNNMqLGzQv7e3b3Mv4Y3oHPgqROaMl4eRS8w3O4QAtLnjiIDyrdOtsjwGtkY3tHJhJtlbbfkdzdmAsl5QV7HjaU3YmgtQ8CdgpXPwAL7o5Yg%7C%7C1f8da57190aa5e7ac1eaeb94a37ea40cad7f7e99.recruiting/position_company_logos/1075770_1727684179"
+    }
+    process_csv_folder(input_folder, filter_eignung=filter_eignung,special_logos=candidates_photos, project_logos=project_logos)

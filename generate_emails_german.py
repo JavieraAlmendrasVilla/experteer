@@ -31,7 +31,7 @@ def extract_projektname_from_csv(csv_file):
 
     return None  # Return None if no project name is found
 
-def extract_candidates_from_csv(csv_file, filter_eignung=None):
+def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=None):
     """
     Extract candidate data from a CSV file and return a list of dictionaries.
 
@@ -40,6 +40,7 @@ def extract_candidates_from_csv(csv_file, filter_eignung=None):
                            Example: "Gut" to include only candidates with "Projekteignung" == "Gut".
     :return: List of dictionaries containing candidate data
     """
+    special_logos = special_logos or {}
     # Detect file encoding
     encoding = detect_file_encoding(csv_file)
 
@@ -53,12 +54,15 @@ def extract_candidates_from_csv(csv_file, filter_eignung=None):
                 continue
 
             # Determine photo URL based on "Anrede"
+            candidate_id = row["Mitglieds ID"]
+            if candidate_id in special_logos:
+                photo_url = special_logos[candidate_id]
             if row["Anrede"] == "Herr":
                 photo_url = "https://www.experteer.de/images/default_photos/male.png"
             elif row["Anrede"] == "Frau":
                 photo_url = "https://www.experteer.de/images/default_photos/female.png"
             else:
-                photo_url = "https://www.experteer.de/images/default_photos/default.png"
+                photo_url = "https://www.experteer.de/images/default_photos/female.png"
 
             # Extract relevant fields
             candidate = {
@@ -469,7 +473,7 @@ def generate_html(title, logo_url, number_candidates, candidates, output_file):
                                       <tr>
                                         <td style="width:72px;">
                                           <img height="auto"
-                                            src="{logo_url}"
+                                            src="https:{logo_url}"
                                             style="border:0;display:block;outline:none;text-decoration:none;height:auto;width:100%;font-size:14px;"
                                             width="72" />
                                         </td>
@@ -736,40 +740,59 @@ def generate_html(title, logo_url, number_candidates, candidates, output_file):
         file.write(html_final)
     print(f"HTML file '{output_file}' has been generated successfully.")
 
-def process_csv_folder(folder_path, filter_eignung=None):
-    
+def process_csv_folder(folder_path, filter_eignung=None, special_logos=None, project_logos=None):
+    """
+    Process all CSV files in a folder, extract candidate data, and generate an HTML file for each.
+
+    :param folder_path: Path to the folder containing CSV files.
+    :param filter_eignung: Filter for "Valutazione del progetto". If None, all candidates are included.
+    :param special_logos: A dictionary mapping candidate IDs to special logo URLs.
+    :param project_logos: A dictionary mapping project names to their company logo URLs.
+    """
+    special_logos = special_logos or {}
+    project_logos = project_logos or {}
+
     for file_name in os.listdir(folder_path):
         if file_name.endswith(".csv"):
             csv_file = os.path.join(folder_path, file_name)
             title = extract_projektname_from_csv(csv_file)
+
             if not title:
                 print(f"Skipping file {csv_file}: No project name found.")
                 continue
 
-            candidates = extract_candidates_from_csv(csv_file, filter_eignung=filter_eignung)
-            
-            # Generate the HTML file and save it in the same folder as the input CSV
-            output_file_path = os.path.join(
-                folder_path,
-                f"{title.replace(' ', '_').replace(':', '_').replace('-', '_')}.html"
+            candidates = extract_candidates_from_csv(
+                csv_file, filter_eignung=filter_eignung, special_logos=special_logos
             )
-            
+
+            # Check if the title exists in project_logos
+            if title in project_logos.keys():
+                company_logo_url = project_logos[title]
+            else:
+                print(f"Warning: No logo found for project '{title}'.")
+                company_logo_url = "https://default-logo-url.com/default-logo.png"  # Replace with your actual default URL
+
+            output_file_path = os.path.join(
+                folder_path, f"{title.replace(' ', '_').replace(':', '_').replace('-', '_')}.html"
+            )
+
             generate_html(
                 title=title,
-                logo_url="https://blobs.experteer.com/blob/v1/eJwtjLEOgjAURR1MIyb-"
-                         "BDNRCpGSNowO7MS1qVjri9A2bSWgP29JHO5yzsnd7r4J3QcnHqZNr056-"
-                         "MhRzBwX-RyXyTlIHfiKmz9jyokJwtL00UjHbqJ_KWfe-t7EH-2tcFGwzGrFEUWXjh5gDScxwIYm"
-                         "VoRnmx6t8RDAaN6b0Qq98MEo4084J-e6IhyTEpdFXZIKMdTRJMAoYfMDL6A5Xg%7C%7Cfa4e3f89e"
-                         "2bb845b2fa9af5442ea53fa28c69327.recruiting/position_company_logos/1075867_1731328376",
+                logo_url=company_logo_url,
                 number_candidates=len(candidates),
                 candidates=candidates,
                 output_file=output_file_path
             )
-
-            print(f"HTML file generated: {output_file_path}")
+            print(f"HTML file generated for project '{title}' at {output_file_path}")
 
 
 if __name__ == "__main__":
+    candidates_photos = {
+        "id": "url"
+    }
+    project_logos = {
+        "title": "url"
+    }
     input_folder = "german_projects"  # Replace with the folder containing CSV files
     filter_eignung = "Gut"  # Change to None if you want all candidates
-    process_csv_folder(input_folder, filter_eignung=filter_eignung)
+    process_csv_folder(input_folder, filter_eignung=filter_eignung, special_logos=candidates_photos, project_logos=project_logos)
