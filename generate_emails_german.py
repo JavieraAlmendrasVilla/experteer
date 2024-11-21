@@ -55,7 +55,7 @@ def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=Non
 
             # Determine photo URL based on "Anrede"
             candidate_id = row["Mitglieds ID"]
-            if candidate_id in special_logos:
+            if candidate_id in special_logos and "url" in special_logos[candidate_id]:
                 photo_url = special_logos[candidate_id]["url"]
             if row["Anrede"] == "Herr":
                 photo_url = "https://www.experteer.de/images/default_photos/male.png"
@@ -79,7 +79,7 @@ def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=Non
 
     return candidates
 
-def generate_html(title, logo_url, number_candidates, candidates, output_file):
+def generate_html(title, logo_url, expertise_dict, number_candidates, candidates, output_file):
     """
     Generate an HTML file for the provided candidate data.
 
@@ -728,8 +728,8 @@ def generate_html(title, logo_url, number_candidates, candidates, output_file):
         # Retrieve expertise for the candidate
         if candidate_id in expertise_dict:
             expertise_list_html = generate_expertise_rows(expertise_dict[candidate_id]["expertises"])
-        else:
-            expertise_list_html = generate_expertise_rows(["No expertise listed"])
+        #else:
+        #    expertise_list_html = generate_expertise_rows(["No expertise listed"])
 
         candidates_section += candidate_template.format(
             candidate_name=candidate["name"],
@@ -742,15 +742,12 @@ def generate_html(title, logo_url, number_candidates, candidates, output_file):
             expertise_list=expertise_list_html,
         )
 
-
     # Combine the template with the filled candidate sections
 
     candidates_complete = candidates_section.format(candidates_section=candidates_section)
     html_content = html_template.format(title=title, logo_url=logo_url, number_candidates=number_candidates)
 
     html_final = html_content + candidates_complete + end
-
-    output_file = title.replace(" ", "_").replace(":", "_").replace("-", "_") + ".html"
 
     # Save the HTML to a file
     with open(output_file, "w", encoding="utf-8") as file:

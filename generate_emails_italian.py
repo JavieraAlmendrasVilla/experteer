@@ -1,6 +1,7 @@
 import csv
 import os
 import chardet
+from pathlib import Path
 
 def detect_file_encoding(file_path):
     """
@@ -34,11 +35,11 @@ def extract_projektname_from_csv(csv_file):
 
     return None  # Return None if no project name is found
 
-def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=None):
+def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=None): 
     """
     Extract candidate data from a CSV file and return a list of dictionaries.
 
-    :param csv_file: Path to the CSV file
+    :param csv_file: Path to the CSV file.
     :param filter_eignung: Filter for "Valutazione del progetto". If None, all candidates are included.
     :param special_logos: A dictionary mapping candidate IDs to special logo URLs.
     :return: List of dictionaries containing candidate data.
@@ -57,18 +58,22 @@ def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=Non
 
             # Determine photo URL
             candidate_id = row["ID utente"]
-            if candidate_id in special_logos:
+            if candidate_id in special_logos and "url" in special_logos[candidate_id]:
                 photo_url = special_logos[candidate_id]["url"]
             elif row["Titolo"] == "Signor":
                 photo_url = "https://www.experteer.de/images/default_photos/male.png"
             elif row["Titolo"] == "Signora":
                 photo_url = "https://www.experteer.de/images/default_photos/female.png"
             else:
-                photo_url = "https://www.experteer.de/images/default_photos/female.png"
+                photo_url = "https://www.experteer.de/images/default_photos/default.png"
+
+            # Include the title in the candidate's name if present
+            title = row["Posizione"].strip()
+            full_name = f"{title} {row['Nome']} {row['Cognome']}".strip() if title else f"{row['Nome']} {row['Cognome']}".strip()
 
             # Extract candidate details
             candidate = {
-                "name": f"{row['Nome']} {row['Cognome']}".strip(),
+                "name": full_name,
                 "id": candidate_id,
                 "job_title": f"{row['Posizione attuale']}\n        presso {row['Azienda']}".strip(),
                 "company": row["Azienda"],
@@ -79,11 +84,8 @@ def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=Non
             }
             candidates.append(candidate)
 
-            # Print candidate details
-           # print(f"Candidate Name: {candidate['name']}")
-           # print(f"Candidate URL: https://intern.experteer.com/admin/account_photo_json?id={candidate['id']}")
-
     return candidates
+
 
 def generate_html(title, logo_url,expertise_dict, number_candidates, candidates, output_file):
     """
@@ -732,8 +734,8 @@ def generate_html(title, logo_url,expertise_dict, number_candidates, candidates,
         # Retrieve expertise for the candidate
         if candidate_id in expertise_dict:
             expertise_list_html = generate_expertise_rows(expertise_dict[candidate_id]["expertises"])
-        else:
-            expertise_list_html = generate_expertise_rows(["No expertise listed"])
+        #else:
+        #    expertise_list_html = generate_expertise_rows([""])
 
         candidates_section += candidate_template.format(
             candidate_name=candidate["name"],
@@ -753,7 +755,7 @@ def generate_html(title, logo_url,expertise_dict, number_candidates, candidates,
 
     html_final = html_content + candidates_complete + end
 
-    output_file = title.replace(" ", "_").replace(":", "_").replace("-", "_") + ".html"
+    
 
     # Save the HTML to a file
     with open(output_file, "w", encoding="utf-8") as file:
@@ -815,11 +817,32 @@ if __name__ == "__main__":
     candidates_info = {
         "9321920": {
           "url":"https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH1zAyMLYxPDeENTMyNzY0szQwM2a7YQK86SzNzUTAYAqecjvg%7C%7C09687101358c4398938549f20e2025174dd09fc5.career/profile_photo/7028341_1562739610",
-          "expertises": ["CAD", "Personal"]
+          "expertises": ["Consulenza"]
+        },
+        "16461372": {
+            "expertises":["AS400"]
+        },
+        "4699626": {
+            "expertises": ["3D modelling"]
+        },
+        "7397497": {
+            "expertises": ["plasturgia"]
+        },
+        "778278": {
+            "expertises": ["creazione e gestione di DataBase Oracle"]
+        },
+        "7533174": {
+            "expertises": [".net framework c#"]
+        },
+        "17912780": {
+            "expertises": ["developer"]
         }
+
     }
+    
     project_logos ={
         "Scada Engineer" : "//blobs.experteer.com/blob/v1/eJwtjLEOgjAURRkMERN_gpkoJSFAG0YHduLaPLHWF6Ft2kpAf96SONzlnJO7238TevAWHrpLr1Y4_IgJFk6KfAnLxOKF8nzD7Z8xaWFGv7ZDMMKyGwwvafVb3dvwo5wBGwTLjJI8pvGlp0fcwhlGjGhiwD-79GS0Q49a8UFPBtTKRy21O5O8Kqu65qQq6rIkTZPHLO5p4nESGP0AMFA5Zg%7C%7C4857cb02d009e02c75cdb39e59b40dab6cb0dae9.recruiting/position_company_logos/1075788_1728551990",
-    "Immobilienvermarktung":"//blobs.experteer.com/blob/v1/eJwtjLEOgjAURR1MIyb-BDNRStRqG0YHduLaPLHWF6FtSiWgP29JHO5yzsldrr4JXwcPD1ulV696_KgORkmLfIzL1BiUCXLG5Z8J7WHAMJVNNMqLGzQv7e3b3Mv4Y3oHPgqROaMl4eRS8w3O4QAtLnjiIDyrdOtsjwGtkY3tHJhJtlbbfkdzdmAsl5QV7HjaU3YmgtQ8CdgpXPwAL7o5Yg%7C%7C1f8da57190aa5e7ac1eaeb94a37ea40cad7f7e99.recruiting/position_company_logos/1075770_1727684179"
-    }
+        "Immobilienvermarktung": "//blobs.experteer.com/blob/v1/eJwtjLEOgjAURRkMERN_gpkoJSFAG0YHduLaPLHWF6Ft2kpAf96SONzlnJO7238TevAWHrpLr1Y4_IgJFk6KfAnLxOKF8nzD7Z8xaWFGv7ZDMMKyGwwvafVb3dvwo5wBGwTLjJI8pvGlp0fcwhlGjGhiwD-79GS0Q49a8UFPBtTKRy21O5O8Kqu65qQq6rIkTZPHLO5p4nESGP0AMFA5Zg%7C%7C4857cb02d009e02c75cdb39e59b40dab6cb0dae9.recruiting/position_company_logos/1075788_1728551990",
+       
+      }
     process_csv_folder(input_folder, filter_eignung=filter_eignung,special_logos=candidates_info, project_logos=project_logos)
