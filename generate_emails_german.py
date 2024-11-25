@@ -70,6 +70,7 @@ def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=Non
                 "id": row["Mitglieds ID"],
                 "job_title": f"{row['Aktuelle Position']}\n        bei {row['Firma']}".strip(),
                 "company": row["Firma"],
+                "industry": row["Branche"],
                 "email": row["E-Mail"],
                 "phone": row["Telefonnummer"],
                 "photo_url": photo_url,
@@ -646,7 +647,7 @@ def generate_html(title, logo_url, expertise_dict, number_candidates, candidates
                                                                                                 <img style="width:18px; height:18px" width="18"
                                                                                                     src="https://links.experteer.com/custloads/766432948/md_1457742.png" />
                                                                                             </td>
-                                                                                            <td style="padding-top:2px">{company}</td>
+                                                                                            <td style="padding-top:2px">{company} ({industry})</td>
                                                                                         </tr>
                                                                                     </table>
                                                                                 </td>
@@ -707,7 +708,64 @@ def generate_html(title, logo_url, expertise_dict, number_candidates, candidates
 
     """
     end = """
-</body> 
+<!-- last text -->
+      <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="dark-bg-outlook" style="width:600px;" width="600" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;background-color:#f4f5f7;"><![endif]-->
+      <div class="dark-bg"
+        style="background-color: #f4f5f7; margin:0px auto;border-radius:0 0 5px 5px;max-width:600px;">
+        <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"
+          style="width:100%;border-radius:0 0 5px 5px;">
+          <tbody>
+            <tr>
+              <td style="direction:ltr;font-size:0px;padding:5px 0;padding-left:2px;text-align:center;">
+                <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr></tr></table><![endif]-->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--[if mso | IE]></td></tr></table><table align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:600px;" width="600" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
+      <div style="background-color: white;margin:0px auto;max-width:600px;">
+        <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="width:100%;">
+          <tbody>
+            <tr>
+              <td style="direction:ltr;font-size:0px;padding:0;padding-left:2px;text-align:center;">
+                <!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" cellspacing="0"><tr><td class="" style="vertical-align:top;width:598px;" ><![endif]-->
+                <div class="mj-column-per-100 mj-outlook-group-fix"
+                  style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                  <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%">
+                    <tbody>
+                      <tr>
+                        <td style="vertical-align:top;padding-left:2px;">
+                          <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="" width="100%">
+                            <tbody>
+                              <tr>
+                                <td align="left"
+                                  style="font-size:0px;padding:10px 25px;padding-left:2px;word-break:break-word;">
+                                  <div
+                                    style="font-family:Lato;font-size:14px;font-style:normal;line-height:24px;text-align:left;color:#3B414A;">
+                                    Sie erreichen Ihren Experteer Business Partner Manager <a
+                                      style="text-decoration:none;"
+                                      href="mailto:robert.stolpa@experteer.com">hier.</a>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!--[if mso | IE]></td></tr></table><![endif]-->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</body>
 
 </html>"""
 
@@ -735,6 +793,7 @@ def generate_html(title, logo_url, expertise_dict, number_candidates, candidates
             candidate_name=candidate["name"],
             job_title=candidate["job_title"],
             company=candidate["company"],
+            industry=candidate["industry"],
             email=candidate["email"],
             phone=candidate["phone"],
             photo_url=candidate["photo_url"],
@@ -754,7 +813,7 @@ def generate_html(title, logo_url, expertise_dict, number_candidates, candidates
         file.write(html_final)
     print(f"HTML file '{output_file}' has been generated successfully.")
 
-def process_csv_folder(folder_path, filter_eignung, special_logos, project_logos):
+def generate_german_emails(folder_path, filter_eignung, special_logos, project_logos):
     """
     Process all CSV files in a folder, extract candidate data, and generate an HTML file for each.
 
@@ -813,4 +872,4 @@ if __name__ == "__main__":
     }
     input_folder = "german_projects"  # Replace with the folder containing CSV files
     filter_eignung = "Gut"  # Change to None if you want all candidates
-    process_csv_folder(input_folder, filter_eignung=filter_eignung, special_logos=candidates_info, project_logos=project_logos)
+    generate_german_emails(input_folder, filter_eignung=filter_eignung, special_logos=candidates_info, project_logos=project_logos)
