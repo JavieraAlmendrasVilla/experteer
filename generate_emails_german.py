@@ -867,16 +867,23 @@ def generate_german_emails(folder_path, filter_eignung, special_logos, project_l
 
 if __name__ == "__main__":
     candidates_info = {
-        "12471757": {
-          "url":"https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH1Lc2NTCzODeEMTUyMzI0tDc0s2a7YQK86SzNzUTAYAq4cj0Q%7C%7C34f5f22d99e2222f5fcc337450ef5888de946037.career/profile_photo/9735860_1452629179",
-           "expertises": ["Avaloq"]
+        "12598970": {
+          "expertises": ["Finanzen" , "IFRS" , "Jahresabschluss"]
         },
-        "16521229" : {
-            "expertises": ["Access Management"]
+        "1132544" : {
+            "expertises": ["Konsolidierung", "Optimalisieren/Reorganisieren Reportingstrukturen"]
+        },
+        "9966385": {
+          "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH1zUyMDQyODeEMTSxNjI0sjQ0M2a7YQK86SzNzUTAYAqOcjsg%7C%7Cd3bb165c261b8de60db955f91a09aa578e4b4f47.career/profile_photo/7520120_1494329211",
+          "expertises": [ "Swiss GAAP", "FER26", "USGAAP/IFRS"]
+        },
+        "304265" : {
+            "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyWVgqL8tMyc1PiCjPySfH0jczMDA6N4QxMDCwNDCwMDUzZrthArzpLM3NRMBgCFVSN4dc808b0dd8993a5656f77b535533349924b4b553.career/profile_photo/276002_1408018005",
+            "expertises": ["IFRS" , "US-GAAP"]
         }
     }
     project_logos = {
-        "Co-Leiter:in Bahnbetriebliche Projekte und Service": "//blobs.experteer.com/blob/v1/eJwtjLEOgjAURR1MIyb-BDNRCpGSNowO7MS1qVjri9A2bSWgP29JHO5yzsnd7r4J3QcnHqZNr056-MhRzBwX-RyXyTlIHfiKmz9jyokJwtL00UjHbqJ_KWfe-t7EH-2tcFGwzGrFEUWXjh5gDScxwIYmVoRnmx6t8RDAaN6b0Qq98MEo4084J-e6IhyTEpdFXZIKMdTRJMAoYfMDL6A5Xg%7C%7Cfa4e3f89e2bb845b2fa9af5442ea53fa28c69327.recruiting/position_company_logos/1075867_1731328376"
+        "head of finance": "//blobs.experteer.com/blob/v1/eJwtjL0OgjAYRRlMIya-BK4kWtAgbRgd2Ilr84m1NtKftJWAvrwlcbjLOSd3tf6mZBMcPEybXR338sMVTAwXhyku51PgOrAFN39GhYNRhrnpo-GO3qB_CWfe-t7EH-0tuChobrVgiKBLR7ZyCUcYZEJSC-HZZrveKAt6ZoMRxu_xqThXDB8LXJV1WdaIoo6kQSoukx-WbzUVc9dd5cbfea4ef24928e57a97cb1279f7ad2560af.recruiting/company_logos/15287_1421739339"
     }
     input_folder = "german_projects"  # Replace with the folder containing CSV files
     filter_eignung = "Gut"  # Change to None if you want all candidates
