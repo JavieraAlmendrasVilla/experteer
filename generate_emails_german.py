@@ -57,18 +57,23 @@ def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=Non
             candidate_id = row["Mitglieds ID"]
             if candidate_id in special_logos and "url" in special_logos[candidate_id]:
                 photo_url = special_logos[candidate_id]["url"]
-            if row["Anrede"] == "Herr":
+            elif row["Anrede"] == "Herr":
                 photo_url = "https://www.experteer.de/images/default_photos/male.png"
             elif row["Anrede"] == "Frau":
                 photo_url = "https://www.experteer.de/images/default_photos/female.png"
             else:
                 photo_url = "https://www.experteer.de/images/default_photos/female.png"
 
+            # Include the title in the candidate's name if present
+            title = row["Titel"].strip()
+            full_name = f"{title} {row['Vorname']} {row['Nachname']}".strip() if title else f"{row['Vorname']} {row['Nachname']}".strip()
+
+
             # Extract relevant fields
             candidate = {
-                "name": f"{row['Vorname']} {row['Nachname']}".strip(),
+                "name": full_name,
                 "id": row["Mitglieds ID"],
-                "job_title": f"{row['Aktuelle Position']}\n        bei {row['Firma']}".strip(),
+                "job_title": row['Aktuelle Position'],
                 "company": row["Firma"],
                 "industry": row["Branche"],
                 "email": row["E-Mail"],
@@ -862,13 +867,16 @@ def generate_german_emails(folder_path, filter_eignung, special_logos, project_l
 
 if __name__ == "__main__":
     candidates_info = {
-        "8586574": {
-          "url":"https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH1zAyMLYxPDeENTMyNzY0szQwM2a7YQK86SzNzUTAYAqecjvg%7C%7C09687101358c4398938549f20e2025174dd09fc5.career/profile_photo/7028341_1562739610",
-          "expertises": ["CAD", "Personal"]
+        "12471757": {
+          "url":"https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH1Lc2NTCzODeEMTUyMzI0tDc0s2a7YQK86SzNzUTAYAq4cj0Q%7C%7C34f5f22d99e2222f5fcc337450ef5888de946037.career/profile_photo/9735860_1452629179",
+           "expertises": ["Avaloq"]
+        },
+        "16521229" : {
+            "expertises": ["Access Management"]
         }
     }
     project_logos = {
-        "title": "url"
+        "Co-Leiter:in Bahnbetriebliche Projekte und Service": "//blobs.experteer.com/blob/v1/eJwtjLEOgjAURR1MIyb-BDNRCpGSNowO7MS1qVjri9A2bSWgP29JHO5yzsnd7r4J3QcnHqZNr056-MhRzBwX-RyXyTlIHfiKmz9jyokJwtL00UjHbqJ_KWfe-t7EH-2tcFGwzGrFEUWXjh5gDScxwIYmVoRnmx6t8RDAaN6b0Qq98MEo4084J-e6IhyTEpdFXZIKMdTRJMAoYfMDL6A5Xg%7C%7Cfa4e3f89e2bb845b2fa9af5442ea53fa28c69327.recruiting/position_company_logos/1075867_1731328376"
     }
     input_folder = "german_projects"  # Replace with the folder containing CSV files
     filter_eignung = "Gut"  # Change to None if you want all candidates
