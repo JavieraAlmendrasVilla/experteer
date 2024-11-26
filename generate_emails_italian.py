@@ -901,6 +901,5 @@ if __name__ == "__main__":
     
     project_logos ={
         "Scada Engineer" : "//blobs.experteer.com/blob/v1/eJwtjL0KwjAYRTtIsIIvUXArmFSlNqGjQ_fiGj5rjMHmhzSWVl_eFBzucs7hrtbflG6Ch4dtsqsXg_oIDRMnBZ7icjEFYQJfcP1nTHoYVZjrLhrh2Q26l_T2be51_DGDAx8Fy52RHFF0aelWLeEIvUpo6iA8m2zXWe3AzLy30g57ciiKkpw5KTEmR1JVJ8RQS9OgtFDJD_8FNXM%7Cdb94d8925a37ec87d05a620c41252565e7c549bf.recruiting/company_logos/1322718_1700141995",
-        "Immobilienvermarktung": "//blobs.experteer.com/blob/v1/eJwtjLEOgjAURRkMERN_gpkoJSFAG0YHduLaPLHWF6Ft2kpAf96SONzlnJO7238TevAWHrpLr1Y4_IgJFk6KfAnLxOKF8nzD7Z8xaWFGv7ZDMMKyGwwvafVb3dvwo5wBGwTLjJI8pvGlp0fcwhlGjGhiwD-79GS0Q49a8UFPBtTKRy21O5O8Kqu65qQq6rIkTZPHLO5p4nESGP0AMFA5Zg%7C%7C4857cb02d009e02c75cdb39e59b40dab6cb0dae9.recruiting/position_company_logos/1075788_1728551990",
-      }
+        }
     generate_italian_emails(input_folder, filter_eignung=filter_eignung,special_logos=candidates_info, project_logos=project_logos)
