@@ -1,6 +1,7 @@
 import csv
 import os
 import chardet
+import re
 
 def detect_file_encoding(file_path):
     """
@@ -50,8 +51,10 @@ def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=Non
 
         for row in csv_reader:
             # Apply filter on "Projekteignung" if specified
-            if filter_eignung and row["Projekteignung"] != filter_eignung:
-                continue
+            if filter_eignung:
+                eignung = row["Projekteignung"].strip()
+                if eignung not in ["Sehr gut", "Gut"]:
+                    continue
 
             # Determine photo URL based on "Anrede"
             candidate_id = row["Mitglieds ID"]
@@ -812,13 +815,43 @@ def generate_html(title, logo_url, expertise_dict, number_candidates, candidates
     html_content = html_template.format(title=title, logo_url=logo_url, number_candidates=number_candidates)
 
     html_final = html_content + candidates_complete + end
-
+    
     # Save the HTML to a file
     with open(output_file, "w", encoding="utf-8") as file:
         file.write(html_final)
     print(f"HTML file '{output_file}' has been generated successfully.")
 
-def generate_german_emails(folder_path, filter_eignung, special_logos, project_logos):
+
+def clear_folder(folder_path):
+    """
+    Remove all files in the specified folder.
+
+    :param folder_path: Path to the folder where files should be removed.
+    """
+    if not os.path.exists(folder_path):
+        print(f"The folder '{folder_path}' does not exist.")
+        return
+
+    if not os.path.isdir(folder_path):
+        print(f"The path '{folder_path}' is not a folder.")
+        return
+
+    # Iterate through all items in the folder
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+
+        # Check if it is a file before attempting to delete
+        if os.path.isfile(file_path):
+            try:
+                os.remove(file_path)
+                print(f"Removed file: {file_path}")
+            except Exception as e:
+                print(f"Error removing file {file_path}: {e}")
+
+    print(f"All files in the folder '{folder_path}' have been removed.")
+
+
+def generate_german_emails(folder_path, output_folder, filter_eignung, special_logos, project_logos):
     """
     Process all CSV files in a folder, extract candidate data, and generate an HTML file for each.
 
@@ -850,9 +883,12 @@ def generate_german_emails(folder_path, filter_eignung, special_logos, project_l
                 print(f"Warning: No logo found for project '{title}'.")
                 company_logo_url = "https://default-logo-url.com/default-logo.png"  # Replace with your actual default URL
 
-            output_file_path = os.path.join(
-                folder_path, f"{title.replace(' ', '_').replace(':', '_').replace('-', '_')}.html"
-            )
+            if not os.path.exists(output_folder):
+                os.mkdir(output_folder)
+
+            sanitized_title = re.sub(r'[<>:"/\\|?*]', '_', title)
+            output_file_path = os.path.join(output_folder, f"{sanitized_title}.html")
+            
 
             generate_html(
                 title=title,
@@ -867,24 +903,30 @@ def generate_german_emails(folder_path, filter_eignung, special_logos, project_l
 
 if __name__ == "__main__":
     candidates_info = {
-        "12598970": {
-          "expertises": ["Finanzen" , "IFRS" , "Jahresabschluss"]
+        "12549134": {
+            "url":"",
+          "expertises": ["Planung und Implementierung von Vetriebsstrategien"]
         },
-        "1132544" : {
-            "expertises": ["Konsolidierung", "Optimalisieren/Reorganisieren Reportingstrukturen"]
+        "4058781" : {
+            "url":"",
+            "expertises": ["Organisation Optimisation"]
         },
-        "9966385": {
-          "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH1zUyMDQyODeEMTSxNjI0sjQ0M2a7YQK86SzNzUTAYAqOcjsg%7C%7Cd3bb165c261b8de60db955f91a09aa578e4b4f47.career/profile_photo/7520120_1494329211",
-          "expertises": [ "Swiss GAAP", "FER26", "USGAAP/IFRS"]
+        "11986946": {
+           "expertises": [ "Market Research & Consumer Understanding"]
         },
-        "304265" : {
-            "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyWVgqL8tMyc1PiCjPySfH0jczMDA6N4QxMDCwNDCwMDUzZrthArzpLM3NRMBgCFVSN4dc808b0dd8993a5656f77b535533349924b4b553.career/profile_photo/276002_1408018005",
-            "expertises": ["IFRS" , "US-GAAP"]
+        "16181747" : {
+             "expertises": ["Navision Own vehicle", "Python / VBA"]
+        },
+        "17693869" : {
+            "url":"",
+            "expertises": ["Key account management", "Verkauf"]
         }
     }
     project_logos = {
-        "head of finance": "//blobs.experteer.com/blob/v1/eJwtjL0OgjAYRRlMIya-BK4kWtAgbRgd2Ilr84m1NtKftJWAvrwlcbjLOSd3tf6mZBMcPEybXR338sMVTAwXhyku51PgOrAFN39GhYNRhrnpo-GO3qB_CWfe-t7EH-0tuChobrVgiKBLR7ZyCUcYZEJSC-HZZrveKAt6ZoMRxu_xqThXDB8LXJV1WdaIoo6kQSoukx-WbzUVc9dd5cbfea4ef24928e57a97cb1279f7ad2560af.recruiting/company_logos/15287_1421739339"
-    }
+        "Vertriebsleiter (m/w/d) Sondermaschinenbau": "" }
+    
     input_folder = "german_projects"  # Replace with the folder containing CSV files
-    filter_eignung = "Gut"  # Change to None if you want all candidates
-    generate_german_emails(input_folder, filter_eignung=filter_eignung, special_logos=candidates_info, project_logos=project_logos)
+    output_folder= "german_projects_finished"
+    filter_eignung = True  # Only include "Sehr gut" and "Gut" candidates
+    generate_german_emails(input_folder, output_folder, filter_eignung=filter_eignung, special_logos=candidates_info, project_logos=project_logos)
+    #clear_folder(input_folder)

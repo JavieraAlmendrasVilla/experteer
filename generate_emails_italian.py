@@ -1,7 +1,9 @@
 import csv
 import os
 import chardet
+import re
 from pathlib import Path
+from generate_emails_german import clear_folder
 
 def detect_file_encoding(file_path):
     """
@@ -53,8 +55,11 @@ def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=Non
 
         for row in csv_reader:
             # Apply filter on "Valutazione del progetto" if specified
-            if filter_eignung and row["Valutazione del progetto"] not in ["Buono", "Molto buono"]:
-                continue
+            
+            if filter_eignung:
+                eignung = row["Valutazione del progetto"].strip()
+                if eignung not in ["Buono", "Molto buono"]:
+                    continue
 
             # Determine photo URL
             candidate_id = row["ID utente"]
@@ -792,9 +797,7 @@ def generate_html(title, logo_url,expertise_dict, number_candidates, candidates,
         # Retrieve expertise for the candidate
         if candidate_id in expertise_dict:
             expertise_list_html = generate_expertise_rows(expertise_dict[candidate_id]["expertises"])
-        #else:
-        #    expertise_list_html = generate_expertise_rows([""])
-
+        
         candidates_section += candidate_template.format(
             candidate_name=candidate["name"],
             job_title=candidate["job_title"],
@@ -822,7 +825,7 @@ def generate_html(title, logo_url,expertise_dict, number_candidates, candidates,
     print(f"HTML file '{output_file}' has been generated successfully.")
 
 
-def generate_italian_emails(folder_path, filter_eignung, special_logos, project_logos):
+def generate_italian_emails(folder_path, output_folder, filter_eignung, special_logos, project_logos):
     """
     Process all CSV files in a folder, extract candidate data, and generate an HTML file for each.
 
@@ -854,9 +857,11 @@ def generate_italian_emails(folder_path, filter_eignung, special_logos, project_
                 print(f"Warning: No logo found for project '{title}'.")
                 company_logo_url = "https://default-logo-url.com/default-logo.png"  # Replace with your actual default URL
 
-            output_file_path = os.path.join(
-                folder_path, f"{title.replace(' ', '_').replace(':', '_').replace('-', '_')}.html"
-            )
+            if not os.path.exists(output_folder):
+                os.mkdir(output_folder)
+
+            sanitized_title = re.sub(r'[<>:"/\\|?*]', '_', title)
+            output_file_path = os.path.join(output_folder, f"{sanitized_title}.html")
 
             generate_html(
                 title=title,
@@ -872,7 +877,8 @@ def generate_italian_emails(folder_path, filter_eignung, special_logos, project_
 
 if __name__ == "__main__":
     input_folder = "italian_projects"  # Replace with the folder containing CSV files
-    filter_eignung = "Molto Buono"  # Change to None if you want all candidates
+    output_folder = "italian_projects_finished"
+    filter_eignung = True  # Change to None if you want all candidates
     candidates_info = {
         "9321920": {
           "url":"https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH1zAyMLYxPDeENTMyNzY0szQwM2a7YQK86SzNzUTAYAqecjvg%7C%7C09687101358c4398938549f20e2025174dd09fc5.career/profile_photo/7028341_1562739610",
@@ -902,4 +908,5 @@ if __name__ == "__main__":
     project_logos ={
         "Scada Engineer" : "//blobs.experteer.com/blob/v1/eJwtjL0KwjAYRTtIsIIvUXArmFSlNqGjQ_fiGj5rjMHmhzSWVl_eFBzucs7hrtbflG6Ch4dtsqsXg_oIDRMnBZ7icjEFYQJfcP1nTHoYVZjrLhrh2Q26l_T2be51_DGDAx8Fy52RHFF0aelWLeEIvUpo6iA8m2zXWe3AzLy30g57ciiKkpw5KTEmR1JVJ8RQS9OgtFDJD_8FNXM%7Cdb94d8925a37ec87d05a620c41252565e7c549bf.recruiting/company_logos/1322718_1700141995",
         }
-    generate_italian_emails(input_folder, filter_eignung=filter_eignung,special_logos=candidates_info, project_logos=project_logos)
+    generate_italian_emails(input_folder, output_folder, filter_eignung=filter_eignung,special_logos=candidates_info, project_logos=project_logos)
+    #clear_folder(input_folder)
