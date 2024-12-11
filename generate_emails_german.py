@@ -903,30 +903,57 @@ def generate_german_emails(folder_path, output_folder, filter_eignung, special_l
 
 if __name__ == "__main__":
     candidates_info = {
-        "12549134": {
-            "url":"",
-          "expertises": ["Planung und Implementierung von Vetriebsstrategien"]
+        
+        "17818" : {
+            "url":"https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXlgqL8tMyc1PiCjPySfH1DMwsDg3hDcyMzIxMDAyMjNmu2ECvOkszc1EwGAGKOI0Q%7C884bc9651ac93e32f08e11865b4ca19f06a84531.career/profile_photo/16800_1726240022",
+             "expertises": ["Optimierung von Prozessen"]
         },
-        "4058781" : {
-            "url":"",
-            "expertises": ["Organisation Optimisation"]
+        "4377789" : {
+            
+             "expertises": [" Prozessgestaltung und -optimierung"]
         },
-        "11986946": {
-           "expertises": [ "Market Research & Consumer Understanding"]
+        "15643671" : {
+            
+             "expertises": ["BMW Diagnostik"]
         },
-        "16181747" : {
-             "expertises": ["Navision Own vehicle", "Python / VBA"]
+        "15046017" : {
+            
+             "expertises": ["DATEV" , "LODAS"]
         },
-        "17693869" : {
-            "url":"",
-            "expertises": ["Key account management", "Verkauf"]
+        "16650810" : {
+            "url":"https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyW1gqL8tMyc1PiCjPySfH1DY2MzAzMjS6BmQyNDC2MLSws2a7YQK86SzNzUTAYAzX8j-w%7C%7Ced2642156b26e82a7d3f5c65fb107d6cfa424c14.career/profile_photo/13360629_1612183898",
+             "expertises": ["Personal", "Kundendienst"]
+        },
+        "6858659" : {
+             "expertises": ["Personalführung", "HR"]
+        },
+        "17958333" : {
+            "url":"https://blobs.experteer.com/blob/v1/eJwNw7EKwjAQANAOEozgT3TQpWASE8U4O3TvHg652IO2idcoRX9eH7zV-iv9pjDE1Nb7CHecny9gDA3jTB8cYQn6pJb_Jk-PILy4dX5LU0F-w0CVlxlK39a7zCnSgCH3qaSDtsYpdXFBn41zxh6tElfReVloRKp-zHIj6Q%7C%7C8555b201991025da51f3846543f3ff194ef60fa1.career/profile_photo/14250095_1725524340",
+             "expertises": ["AS400" , "Jira Confluence"]
+        },
+        "17496887" : {
+            "url":"https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyW1gqL8tMyc1PiCjPySfH1DYwsLA3NDC6BmMxNzS1Njcws2a7YQK86SzNzUTAYAzvEkCg%7C%7C31da018449a15c10c4f8812d92f15c58ad97fecf.career/profile_photo/13880718_1664795378",
+             "expertises": ["Product Management"]
+        },
+        "3921409" : {
+            "url":"https://blobs.experteer.com/blob/v1/eJwNw7EKwjAQANAOEozgTxTEpWBDSEni7NC9ezjkYg_aJl6jFP15ffB2-6_0h8IQU1-fI9xxfb6AMTSMK31whi2ort3-m7w8gvDiNvgjLQX5DRNVXmYoY1-fMqdIE4Y8ppIuWmnrWhOUsU5pZ40RVzF4WWhGqn6rGCPQc95c94b98b010cf20db1be0a09319b1f1c861852.career/profile_photo/3138905_1589139855",
+             "expertises": ["Führungserfahrung", "Sales "]
+        },
+        "15195477" : {
+            "url":"https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyW1gqL8tMyc1PiCjPySfH1DIyMjE1MLg3hDcyNzYwtDIxMTNmu2ECvOkszc1EwGAMycI-0%7C00c31ef3c6b723d76dcfdd97581d369772a4fcf9.career/profile_photo/12224580_1727381244",
+             "expertises": ["INTERNET ADVANCED SKILLS"]
+        },
+        "13807062" : {
+            
+             "expertises": [ "Microsoft Office Suite" , "SAP ERP" , "Salesforce"]
         }
     }
     project_logos = {
-        "Vertriebsleiter (m/w/d) Sondermaschinenbau": "" }
-    
+        "Chief Accountant (m/w/d)": "//blobs.experteer.com/blob/v1/eJwtjEELwiAYhncIaUH_IXYeNMeCoXjssPvoKl_LnLSpqA1Xfz4HHd7L8zy8u_03J4fg4Gm64uaEVx8xQ-S4rmJaKWIQOvANsz-j0sGiwsqGZISjdxhe0pm3frD0o70FlwQtrZYcEXTtyVFt4QKTykhuIYxdcRrMbEGvfDLS-HN94bhpcY1x21SIop7kQc1CZT_4bjRmd7b039f72ba5ca67bc4a91616d5a2a22c500361c.recruiting/company_logos/25_1481211840",
+        "HR Business Partner (m/w/d)": "//blobs.experteer.com/blob/v1/eJwtjLEOgjAURRkMERN_gpkoVUxjG0YHduLaPLHWF6Ft2kpAf96SONzlnJO7Wn8ztgkOHqbJr056_MgBJkEO5RRXyClIHcSC6z_jysGIYa67aKTjN-heypm3vtfxR3sLLgpeWK1EytJLy7a4hCP0mLDMQng2-c4ajwGNFp0ZLOhZ9EYZvyclPZ2rUhB6PFaUEkJTnrYsCzhITH4u-DlWe684efb18f0fb644bcf7521850368e3579ccf315.recruiting/position_company_logos/1075940_1733477117",
+        "SaaS": "//blobs.experteer.com/blob/v1/eJwtjEELwiAYhncIaUH_IXYeNMeCoXjssPvoKl_LnLSpqA1Xfz4HHd7L8zy8u_03J4fg4Gm64uaEVx8xQ-S4rmJaKWIQOvANsz-j0sGiwsqGZISjdxhe0pm3frD0o70FlwQtrZYcEXTtyVFt4QKTykhuIYxdcRrMbEGvfDLS-HN94bhpcY1x21SIop7kQc1CZT_4bjRmd7b039f72ba5ca67bc4a91616d5a2a22c500361c.recruiting/company_logos/25_1481211840" }
     input_folder = "german_projects"  # Replace with the folder containing CSV files
     output_folder= "german_projects_finished"
-    filter_eignung = True  # Only include "Sehr gut" and "Gut" candidates
+    filter_eignung = False  # Only include "Sehr gut" and "Gut" candidates
     generate_german_emails(input_folder, output_folder, filter_eignung=filter_eignung, special_logos=candidates_info, project_logos=project_logos)
     #clear_folder(input_folder)
