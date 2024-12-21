@@ -53,7 +53,7 @@ def extract_candidates_from_csv(csv_file, filter_eignung=None, special_logos=Non
             # Apply filter on "Projekteignung" if specified
             if filter_eignung:
                 eignung = row["Projekteignung"].strip()
-                if eignung not in ["Sehr gut", "Gut"]:
+                if eignung not in ["Sehr gut", "Gut", "Buono", "Molto buono"]:
                     continue
 
             # Determine photo URL based on "Anrede"
