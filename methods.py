@@ -40,24 +40,19 @@ def clear_folder(folder_path):
 
     print(f"All files in the folder '{folder_path}' have been removed.")
 
-def read_html_template(country, file_part) -> str:
+def read_html_template(country) -> str:
     
+    path_html_files = Path(__file__).parent.resolve() / "html_files"
+
     if country == "DE":
         country_version = "german"
+        file_name = f"template_{country_version}.html"
     elif country == "IT":
         country_version = "italian"
+        file_name = f"template_{country_version}.html"
     else:
         return ""  # Ungültiger Ländercode
 
-    path_html_files = Path(__file__).parent.resolve() / "html_files"
-
-    # Datei bestimmen
-    if file_part in ["header", "candidates"]:
-        file_name = f"{file_part}.txt"
-    elif file_part in ["body", "end"]:
-        file_name = f"{file_part}_{country_version}.txt"
-    else:
-        return ""  # Ungültiger Dateiteil
 
     # Dateiinhalt lesen
     try:
@@ -135,17 +130,19 @@ def extract_candidates_from_csv(country, csv_file, filter=None, profile_photo=No
             # Apply filter on "Projekteignung" if specified
             if filter:
                 rate = row[rating_row].strip()
-                if rate not in ["Sehr gut","Gut","Buono", "Molto buono"]:
+                if rate not in ["Hervorragend","Sehr gut","Gut","Buono", "Molto buono"]:
                     continue
 
             # Determine photo URL based on "Anrede"
             candidate_id = row[id_row]
             if candidate_id in profile_photo and "url" in profile_photo[candidate_id]:
                 photo_url = profile_photo[candidate_id]["url"]
-            elif row[gender] == "Herr" or "Signor":
+            # Handle gender-based default logic
+            elif row[gender].strip().lower() in ["herr", "signor"]:
                 photo_url = "https://www.experteer.de/images/default_photos/male.png"
-            elif row[gender] == "Frau" or "Signora":
+            elif row[gender].strip().lower() in ["frau", "signora"]:
                 photo_url = "https://www.experteer.de/images/default_photos/female.png"
+            # Fallback for unexpected or missing gender values
             else:
                 photo_url = "https://www.experteer.de/images/default_photos/female.png"
 
@@ -182,11 +179,8 @@ def generate_html(country, title, logo_url, expertise_dict, number_candidates, c
     """
     
     # Base HTML template
-    header = read_html_template(country, "header")
-    body = read_html_template(country, "body")
-    candidate_template = read_html_template(country, "candidates")
-    end = read_html_template(country, "end")
-    html_template = header + body
+    
+    html_template = read_html_template(country)
     
     
     # Generate expertise table rows
