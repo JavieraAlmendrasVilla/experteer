@@ -628,7 +628,7 @@ def generate_html(title, logo_url, job_id, expertise_dict, number_candidates, ca
                                                                     Sie erreichen Ihren Experteer Business Partner
                                                                     Manager
                                                                     <a style="text-decoration: none"
-                                                                        href="mailto:steven.franke@experteer.com">hier.</a>
+                                                                        href="mailto:email@experteer.com">hier.</a>
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -867,3 +867,4 @@ if __name__ == "__main__":
     generate_german_emails(input_folder, output_folder, filter_eignung=filter_eignung, special_logos=candidates_info,
                            project_logos=project_logos)
     #clear_folder("german_projects_finished")
+
