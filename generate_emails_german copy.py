@@ -777,94 +777,32 @@ def generate_german_emails(folder_path, output_folder, filter_eignung, special_l
 
 
 if __name__ == "__main__":
+
+    # Example data
     candidates_info = {
-"194762": {
-    "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyWVgqL8tMyc1PiCjPySfH1DczMzM8N4Q1MzExMjcwtDSzZrthArzpLM3NRMBgCHliOW476c81f13c0d429d4f00f2d7f34efedc53e6feb7.career/profile_photo/176661_1564427819"
-  ,"expertises": ["DATEV", "MS-Office", "Rechnungslegung US-GAAP und HGB", "SAP R/3 FI", "CO", "MM", "PP", "SD"]
+"123456": {
+    "url": "https://experteer.com/profile_photo"
+  ,"expertises": ["DATEV", "MS-Office", "Rechnungslegung US-GAAP und HGB", "SAP R/3 FI"]
   },
-"18203196": {
-    "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyW1gqL8tMyc1PiCjPySfH1DExMTYyMDw3hDc2MLU3NLA1NDNmu2ECvOkszc1EwGAMy0I-8%7Ce7312415148dec375cbe22d7823a8dbce7203697.career/profile_photo/14443201_1738579051"
-  ,"expertises":["B2B Sales", "B2C Sales", "Budgetverantwortung", "CAD", "CRM", "Cross- und Upselling", "Einarbeitung neuer Mitarbeiter", "Gebietsführung", "Kundenbetreuung", "Orthopädie", "Produktschulungen", "Projektkoordination", "Projektmanagement", "Projektplanung"]
+"123456": {
+    "url": "https://experteer.com/profile_photo"
+  ,"expertises":["B2B Sales", "B2C Sales", "Budgetverantwortung", "CAD", "CRM", "Cross- und Upselling"]
 },
-"17415496": {
-    "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyW1gqL8tMyc1PiCjPySfH1DYwsjI0MjQ6BmUxNDS2Mgl82aLcSKsyQzNzWTAQDMdCPs44e9eee996b095dd1461cbb05e8b65f1f450dab4.career/profile_photo/13822121_1654193382"
-  ,"expertises":["CRM (Capsule)", "Excel", "MDG", "MS Office", "Microsoft 365", "Oracle", "PPT", "SAP", "Symbol", "Word"]
 
-  },
-  "17864214": {
-    "url": "https://blobs.experteer.com/blob/v1/eJwNw7EKwjAQANAOEozgT3TQpWCPxgbj7NC9ezjkYg_aJl6jFP15ffA22692uywYYlceA95peb5QyFdCC39owtVDW6__VZofXjl1692e50zyxpELpxPmoSsPSWLgkXwaYo4nMGDPtm492ObSWGMA1FX1TmeeiIsfzYQj9Q%7C%7C62b07b9b2a88d102f9b50859af6776c2bdceb771.career/profile_photo/14175706_1739374411"
-  ,"expertises":["CMS", "CRM", "Change Management", "Citrix", "Compliance Management", "Computer Science", "Confluence", "Consultancy", "Customer feedback", "CyberArk", "DB2", "Data recovery", "Debugging", "Desktop support", "Docker", "ERP", "EXCEL", "Engineering", "File system", "Finances", "Firewalls"]
-  },
-   "17748267": {
-    "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyW1gqL8tMyc1PiCjPySfH1DEwMLQ0NDS6BmSyNLUwNjUyM2a7YQK86SzNzUTAYAzPoj8Q%7C%7C67e2b92ea752d5d5d07941e555620c93e062c25f.career/profile_photo/14081119_1692950352"
-  ,"expertises":["Automatisierung", "BMC Remedy", "Cisco", "Consulting", "DHCP", "DNS", "Dokumentationen", "Erneuerung", "Firewall", "Gas", "HP Server", "Hardware", "Hyper-V", "IPTV", "IT System", "IT-Infrastruktur", "KPI", "MS Active Directory", "McAfee", "Microsoft Windows Server", "Outsourcing", "Pflegen", "Projektmanagement", "Projektunterstützung", "Release Management", "SCCM", "SCOM", "Server Administrator"]
-
-  },
-  "12853407": {
-    "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyW1gqL8tMyc1PiCjPySfH1DAwMLA1MzQ6Bmc0NLcwtLC1M2a7YQK86SzNzUTAYAzZ4kAA%7C%7Ce0be8e1d7a2d6dc1507b86ab29d7e09e188e25c3.career/profile_photo/10080561_1671978985"
-   ,"expertises":["Architect", "BIM", "Data Analyst", "Data Mining", "Data Visualization", "Microsoft Excel", "OLUWAROTIMI", "Programming", "R", "REVIT", "SQL", "Statistics", "Tableau", "Building Construction", "Design Patterns"]
-
-   },
-   "17836632":{
-       "expertises":["Computer Services", "Data Visualisation", "ETL", "Economic", "Excel", "Geoscience", "Geosciences", "Investigation", "Machine Learning", "Microsoft Access", "Microsoft Excel", "Microsoft Office", "Modelling", "Operational Efficiency", "Power BI"]
-   },
-   "7941489": {
-    "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH0zA0MDI0sjoF5DcwtDEzMzUzZrthArzpLM3NRMBgCphyO-723b2401d7d9a7d0673aac3f5f88698455d4e878.career/profile_photo/6010292_1617814665"
-  ,"expertises":["BaFin", "Beschwerdemanagement", "Car sharing", "Car2go", "Claim Management", "Claims", "Claims Management", "Corporate Insurance", "Einkauf", "Englisch", "Fleet Insurance", "Fleet Management", "Flottenmanagement", "Flottenversicherung", "Free float car sharing", "Führungserfahrung", "Haftpflicht underwriter", "Handlungsvollmacht"]
-
-  },
-  "2874089": {
-    "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH0jY1NLQ3PjeCA2N7KwtDQwYrNmC7HiLMnMTc1kAACq3yPL467f8620d9e221a59f0150efc094e5607d351861.career/profile_photo/2359173_1737289902"
-   ,"expertises":["Bank/Investment", "Change management", "Coaching", "Entrepreneurism", "Insurance", "Leadership", "Motivation", "Operations management", "Process improvement", "Process optimizations", "Sales"]
-
-  },
-  "1939953": {
-    "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH1DMxNjQ0uTeEMTAwsDMzMjEws2a7YQK86SzNzUTAYAqeMjwA%7C%7Ca34dfe1cabac8151d9cbb80772607bbe73673d12.career/profile_photo/1643194_1408066248"
-  ,"expertises":["Bewerbergespräche", "Vertriebsprozesse", "Führung", "Analysen und Massnahmenplanung", "Coaching", "Schulung", "Workshops"]
-
-  },
-  "12021667": {
-    "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH1LYxNDA0vDeENzYwszA2MzUwM2a7YQK86SzNzUTAYAqhcjvw%7C%7C63e31cc578166ca46957c340b6045b2618b39eef.career/profile_photo/9341091_1738603650"
-  ,"expertises":["Haftpflichtrecht", "Schadenspezialist Industriehaftpflichtversicherung"]
-},
-"6082635":{
-    "expertises": ["Capital Markets", "Company and Tax Law", "Compliance", "Leadership", "Management", "Private equity", "Project management", "Real estate"]
-
-},
-"11151231":{
-    "expertises": ["Erfahrungen in Projektarbeit", "Mitarbeiterführung", "Mitarbeitercoaching", "Mitarbeitereinsatzplanung", "Mitarbeiterausbildung", "Organisation und Durchführung von Schulungen", "Personengroßschäden", "Referentin in Stabsfunktion", "Schadenbearbeitung", "Regulierungsaußendienst", "Gruppenleitung", "Schadenjuristin", "Schadensregulierung", "Versicherungsrecht", "Langjährige Erfahrung in der Versicherungsbranche"]
-
-},
- "10939012": {
-    "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH0LY3MDS2PTeEMTI1NDQwtjIxM2a7YQK86SzNzUTAYAqj4jvw%7C%7Ca26d001cca08e32dfa6141efc28dbda97ac88777.career/profile_photo/8370935_1425118324"
-  ,"expertises": ["Controlling", "Einkauf", "Projektmanagement", "Prozessoptimierung"]
-},
- "5324502": {
-    "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyXVgqL8tMyc1PiCjPySfH0TQ3NTExPzeENTcwsjYwNDYwM2a7YQK86SzNzUTAYAqfwjuw%7C%7C01b7e9abc19549e4c045b30cb1695a3555f1b527.career/profile_photo/4175447_1578230130"
-  ,"expertises": ["Aufbau von zwei Sachversicherungszweigen", "Produktentwicklung", "Schaden", "Vertrieb"]
-},
-"14649309": {
-    "url": "https://blobs.experteer.com/blob/v1/eJxj4ajmtOIqKUpMy_dUUk9LTE4tLixNLEqN1ylKLc6sSs1NrIg3NDOoAGKdgrz0eDYrNtcQK97MvJLUorLEnEwGK86CxJIMTyW1gqL8tMyc1PiCjPySfH1DQ3MTAyNLw3hDUxNzS0tTA2MDNmu2ECvOkszc1EwGAM0ZI_I%7Cc667cd8b9ad66d893bb985a072a0c69f19a9e302.career/profile_photo/11740291_1547995030"
-  ,"expertises": ["Beratung", "Consulting", "Fachliche Leitung", "Gewerbliche Versicherungen", "Prozessoptimierung", "Underwriting", "Vergleichsrechnerentwicklung", "Vertrieb", "Liability Insurance"]
-}
-
-
-
-  
   
 }
     project_logos = {
-        "Berater Projektfinanzierung (m/w/d)": ["50150171", "//blobs.experteer.com/blob/v1/eJwtjL0OgjAYRRlMIya-BDNRfgLVNowO7MS1-cRaG6Ft2kpAX96SONzlnJO72X5jsvMWHrpNrpY7-eEjzCwvsjks5bPnyrMVN39GhYVJ-qXpg-GW3qB_Cavf6t6EH-UM2CBoapRgiKBLR_ZyDScYZERiA_7ZJgejnfRSK9br0YBa2KCFdsc8w9X5VLMcl3VZYFyViKKOxF6OXEY_MBw5Yw%7C%7C7b41fb60190bf1a2ffc9b2d8bd937bdd70afbbe1.recruiting/position_company_logos/1075986_1736327753"],
-       "Bereichsleitung Schaden Außenregulierung (m/w/d)":["50457753","//blobs.experteer.com/blob/v1/eJwtjLEOgjAURRlMIyb-BK4kyhOJtmF0YCeuzRNqbYS2KZWA_rwlcbjLOSd3tf7GdOMdPkyV3JwY1Ef0OPEMDlNYKiYvtOcLLv-MSYej8nPZBCMcu2Pzks68dVuGHz1YdEGw1GrJCSXXmm7VEo7YqYjGFv2zSnaN6S3qmXdGmmF_BMiBZ0UOpzNcoCCM1DT2qhcq-gGVxTUOb555e4c737694225dbf9383506f6f76aaeaba075.recruiting/company_logos/32242_1642582926"],
-       "IT-Spezialist für Server- und Rechenzentrumsinfrastruktur (m/w/d)":["50431109", "//blobs.experteer.com/blob/v1/eJwtjLEOgjAURRlMIyb-BDPRFiNoG0YHduLaPLHWRmibthLQn7ckDnc55-Su1t-UboKDh2myqxNefcQAEycFnuJyMQWhA19w_WdMOhhVmOsuGuHYDbqXdOat73X80d6Ci4LlVkuOKLq0dKuWcIReJTS1EJ5NtrPGq6CM5p0ZLOiZ90Yavye4KvGh5KQ6nIojweUZMdTSNKhBqOQHLqo5VA%7C%7Cd366cd84cd2ce568e63a5a123ca7ded7c256a557.recruiting/position_company_logos/1076036_1738251069"]
+        "Berater Projektfinanzierung (m/w/d)": ["123456", "//experteer.com/company_logo"],
+       "Bereichsleitung Schaden Außenregulierung (m/w/d)":["123456","//blobs.experteer.com/company_logo"],
+       "IT-Spezialist für Server- und Rechenzentrumsinfrastruktur (m/w/d)":["123456", "//blobs.experteer.com/company_logo"]
        }
 
     
-
     input_folder = "german_projects"  # Replace with the folder containing CSV files
     output_folder = "german_projects_finished"
     filter_eignung = True  # Only include "Sehr gut" and "Gut" candidates
     generate_german_emails(input_folder, output_folder, filter_eignung=filter_eignung, special_logos=candidates_info,
                            project_logos=project_logos)
     #clear_folder("german_projects_finished")
+
 
